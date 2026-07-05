@@ -27,7 +27,7 @@ export function ProjectCaseStudyCard({
   features,
 }: ProjectCaseStudyCardProps) {
   return (
-    <Card className="group border-white/10 bg-[#111116] text-white ring-white/10 transition duration-300 ease-out hover:-translate-y-1 hover:border-violet-300/35 hover:bg-[#14141b] hover:shadow-2xl hover:shadow-violet-950/30">
+    <Card className="group border-white/10 bg-[#111116] text-white ring-white/10 transition duration-300 ease-out hover:-translate-y-1 hover:border-violet-300/35 hover:bg-[#14141b] hover:shadow-2xl hover:shadow-violet-950/30 active:translate-y-0 active:scale-[0.99]">
       <CardHeader>
         <ProjectPreview title={title} label={label} role={role} />
         <CardTitle className="font-heading text-2xl font-bold text-white">
@@ -133,7 +133,7 @@ function ProjectPreview({
           {rows.map((row, index) => (
             <div
               key={row}
-              className="flex items-center gap-3 rounded-lg border border-white/10 bg-white/[0.035] px-3 py-2.5 transition group-hover:border-violet-300/20 group-hover:bg-white/[0.055]"
+              className="flex items-center gap-3 rounded-lg border border-white/10 bg-white/[0.035] px-3 py-2.5 transition duration-300 group-hover:border-violet-300/20 group-hover:bg-white/[0.055]"
             >
               <span className="grid size-7 place-items-center rounded-md bg-violet-500/15 text-xs font-bold text-violet-100">
                 {index + 1}
@@ -147,7 +147,7 @@ function ProjectPreview({
           {metrics.map(([labelText, value]) => (
             <div
               key={labelText}
-              className="rounded-lg border border-cyan-300/15 bg-cyan-400/10 p-3 transition group-hover:border-cyan-200/30 group-hover:bg-cyan-400/15"
+              className="rounded-lg border border-cyan-300/15 bg-cyan-400/10 p-3 transition duration-300 group-hover:border-cyan-200/30 group-hover:bg-cyan-400/15"
             >
               <p className="text-[0.68rem] uppercase text-cyan-100/70">
                 {labelText}

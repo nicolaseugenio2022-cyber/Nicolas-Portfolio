@@ -24,12 +24,12 @@ export function TimelineItem({
   const hasLocation = locationName && address && embedUrl && mapUrl;
 
   return (
-    <article className="relative pl-12">
-      <div className="absolute left-0 top-1 grid size-9 place-items-center rounded-full border border-violet-300/40 bg-violet-500 text-sm font-bold text-white shadow-lg shadow-violet-950/40">
+    <article className="relative pl-12" data-reveal="slide-up">
+      <div className="absolute left-0 top-1 grid size-9 place-items-center rounded-full border border-violet-300/40 bg-violet-500 text-sm font-bold text-white shadow-lg shadow-violet-950/40 transition duration-300 ease-out">
         {date.slice(-2)}
       </div>
       <div className="absolute bottom-0 left-4 top-12 w-px bg-violet-400/25" />
-      <div className="rounded-xl border border-white/10 bg-white/[0.035] p-5 transition duration-300 ease-out hover:-translate-y-1 hover:border-violet-300/35 hover:bg-white/[0.055] hover:shadow-xl hover:shadow-violet-950/25">
+      <div className="rounded-xl border border-white/10 bg-white/[0.035] p-5 transition duration-300 ease-out hover:-translate-y-1 hover:border-violet-300/35 hover:bg-white/[0.055] hover:shadow-xl hover:shadow-violet-950/25 active:translate-y-0 active:scale-[0.995]">
         <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <h3 className="font-heading text-xl font-semibold text-white">{title}</h3>

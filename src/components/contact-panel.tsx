@@ -6,7 +6,7 @@ import { contactDetails } from "@/data/profile";
 import { cn } from "@/lib/utils";
 
 const inputClasses =
-  "min-h-11 w-full rounded-xl border border-violet-400/45 bg-black/35 px-4 py-3 text-sm text-white outline-none transition placeholder:text-zinc-600 focus:border-violet-300 focus:ring-3 focus:ring-violet-400/25";
+  "min-h-11 w-full rounded-xl border border-violet-400/45 bg-black/35 px-4 py-3 text-sm text-white outline-none transition duration-300 ease-out placeholder:text-zinc-600 hover:border-violet-300/60 focus:border-violet-300 focus:ring-3 focus:ring-violet-400/25";
 
 export function ContactPanel() {
   const [form, setForm] = useState({
@@ -72,7 +72,8 @@ export function ContactPanel() {
     <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
       <form
         onSubmit={handleSubmit}
-        className="rounded-xl border border-violet-400/25 bg-black/25 p-6 shadow-2xl shadow-violet-950/20"
+        data-reveal="slide-up"
+        className="rounded-xl border border-violet-400/25 bg-black/25 p-6 shadow-2xl shadow-violet-950/20 transition duration-300 ease-out hover:border-violet-300/35 hover:bg-black/30"
       >
         <h3 className="font-heading text-2xl font-bold text-white">
           Send me a message
@@ -151,7 +152,7 @@ export function ContactPanel() {
         <button
           type="submit"
           disabled={delivery.status === "sending"}
-          className="mt-6 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-violet-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-950/30 outline-none transition hover:bg-violet-400 focus-visible:ring-3 focus-visible:ring-violet-300/70 disabled:cursor-not-allowed disabled:opacity-60"
+          className="mt-6 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-violet-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-950/30 outline-none transition duration-300 ease-out hover:-translate-y-0.5 hover:bg-violet-400 active:translate-y-0 active:scale-[0.98] focus-visible:ring-3 focus-visible:ring-violet-300/70 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {delivery.status === "sending" ? "Sending..." : "Send Message"}
           {delivery.status === "sending" ? (
@@ -163,7 +164,10 @@ export function ContactPanel() {
       </form>
 
       <div className="grid gap-6">
-        <div className="rounded-xl border border-violet-400/20 bg-white/[0.035] p-6">
+        <div
+          className="rounded-xl border border-violet-400/20 bg-white/[0.035] p-6 transition duration-300 ease-out hover:-translate-y-1 hover:border-violet-300/35 hover:bg-white/[0.055] hover:shadow-xl hover:shadow-violet-950/20 active:translate-y-0 active:scale-[0.995]"
+          data-reveal="slide-up"
+        >
           <h3 className="font-heading text-2xl font-bold text-white">
             Let&apos;s work together
           </h3>
@@ -187,7 +191,10 @@ export function ContactPanel() {
           </ul>
         </div>
 
-        <div className="rounded-xl border border-violet-400/20 bg-[#111116] p-6">
+        <div
+          className="reveal-delay-1 rounded-xl border border-violet-400/20 bg-[#111116] p-6 transition duration-300 ease-out hover:-translate-y-1 hover:border-violet-300/35 hover:bg-[#14141b] hover:shadow-xl hover:shadow-violet-950/20 active:translate-y-0 active:scale-[0.995]"
+          data-reveal="slide-up"
+        >
           <h3 className="font-heading text-xl font-bold text-white">
             Quick details
           </h3>
@@ -195,7 +202,7 @@ export function ContactPanel() {
             {usefulDetails.map((item) => (
               <div
                 key={item.label}
-                className="flex items-center gap-4 rounded-xl border border-white/10 bg-black/20 p-4"
+                className="flex items-center gap-4 rounded-xl border border-white/10 bg-black/20 p-4 transition duration-300 ease-out hover:border-violet-300/30 hover:bg-violet-500/10 active:scale-[0.99]"
               >
                 <item.icon
                   className="size-5 shrink-0 text-violet-200"
@@ -213,7 +220,7 @@ export function ContactPanel() {
             ))}
           </div>
 
-          <div className="mt-5 rounded-xl border border-cyan-300/20 bg-cyan-400/10 p-4">
+          <div className="mt-5 rounded-xl border border-cyan-300/20 bg-cyan-400/10 p-4 transition duration-300 ease-out hover:border-cyan-200/35 hover:bg-cyan-400/15">
             <div className="flex items-center gap-3">
               <CheckCircle2
                 className="size-5 shrink-0 text-cyan-100"

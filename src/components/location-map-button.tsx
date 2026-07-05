@@ -43,7 +43,7 @@ export function LocationMapButton({
         type="button"
         onClick={openDialog}
         className={cn(
-          "inline-flex min-h-11 items-center gap-2 rounded-lg text-left text-sm font-medium outline-none transition focus-visible:ring-3 focus-visible:ring-violet-300/70",
+          "inline-flex min-h-11 items-center gap-2 rounded-lg text-left text-sm font-medium outline-none transition duration-300 ease-out active:scale-[0.97] focus-visible:ring-3 focus-visible:ring-violet-300/70",
           variant === "inline"
             ? "px-1 py-1 text-cyan-100 hover:text-cyan-50"
             : "text-violet-200 hover:text-violet-100",
@@ -79,7 +79,7 @@ export function LocationMapButton({
           <button
             type="button"
             onClick={closeDialog}
-            className="grid size-10 shrink-0 place-items-center rounded-lg border border-white/10 bg-white/[0.04] text-zinc-200 outline-none transition hover:bg-white/10 hover:text-white focus-visible:ring-3 focus-visible:ring-violet-300/70"
+            className="grid size-10 shrink-0 place-items-center rounded-lg border border-white/10 bg-white/[0.04] text-zinc-200 outline-none transition duration-300 ease-out hover:bg-white/10 hover:text-white active:scale-95 focus-visible:ring-3 focus-visible:ring-violet-300/70"
             aria-label="Close map"
           >
             <X className="size-5" aria-hidden="true" />
@@ -106,7 +106,7 @@ export function LocationMapButton({
               href={mapUrl}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-violet-300/30 bg-violet-500/15 px-4 py-2 text-sm font-semibold text-violet-100 outline-none transition hover:bg-violet-500/25 focus-visible:ring-3 focus-visible:ring-violet-300/70"
+              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-violet-300/30 bg-violet-500/15 px-4 py-2 text-sm font-semibold text-violet-100 outline-none transition duration-300 ease-out hover:-translate-y-0.5 hover:bg-violet-500/25 active:translate-y-0 active:scale-[0.98] focus-visible:ring-3 focus-visible:ring-violet-300/70"
             >
               Open in Google Maps
               <ExternalLink className="size-4" aria-hidden="true" />

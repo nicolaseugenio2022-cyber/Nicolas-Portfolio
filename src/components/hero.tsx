@@ -15,8 +15,8 @@ export function Hero() {
       </div>
 
       <div className="mx-auto grid max-w-6xl items-center gap-12 lg:min-h-[calc(100dvh-96px)] lg:grid-cols-[1.08fr_0.92fr]">
-        <div className="max-w-3xl">
-          <p className="mb-6 inline-flex items-center gap-2 rounded-full border border-violet-400/20 bg-violet-500/10 px-4 py-2 text-sm font-semibold text-violet-100">
+        <div className="hero-open max-w-3xl">
+          <p className="mb-6 inline-flex items-center gap-2 rounded-full border border-violet-400/20 bg-violet-500/10 px-4 py-2 text-sm font-semibold text-violet-100 shadow-lg shadow-violet-950/15 transition duration-300 ease-out hover:border-violet-300/40 hover:bg-violet-500/15">
             <Sparkles className="size-4" aria-hidden="true" />
             Available for entry-level developer roles
           </p>
@@ -39,14 +39,14 @@ export function Hero() {
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <a
               href="#projects"
-              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-violet-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-950/40 outline-none transition hover:bg-violet-400 focus-visible:ring-3 focus-visible:ring-violet-300/70"
+              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-violet-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-950/40 outline-none transition duration-300 ease-out hover:-translate-y-0.5 hover:bg-violet-400 active:translate-y-0 active:scale-[0.98] focus-visible:ring-3 focus-visible:ring-violet-300/70"
             >
               View Projects
               <ArrowDown className="size-4" aria-hidden="true" />
             </a>
             <a
               href="#contact"
-              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-violet-400/40 px-5 py-3 text-sm font-semibold text-violet-100 outline-none transition hover:bg-violet-500/10 focus-visible:ring-3 focus-visible:ring-violet-300/70"
+              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-violet-400/40 px-5 py-3 text-sm font-semibold text-violet-100 outline-none transition duration-300 ease-out hover:-translate-y-0.5 hover:bg-violet-500/10 active:translate-y-0 active:scale-[0.98] focus-visible:ring-3 focus-visible:ring-violet-300/70"
             >
               Email Me
               <Mail className="size-4" aria-hidden="true" />
@@ -54,20 +54,20 @@ export function Hero() {
           </div>
 
           <div className="mt-8 flex flex-wrap gap-3 text-sm text-zinc-300">
-            <span className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2">
+            <span className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 transition duration-300 hover:border-violet-300/25 hover:bg-white/[0.055]">
               <MapPin className="size-4 text-violet-200" aria-hidden="true" />
               {profile.location}
             </span>
-            <span className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2">
+            <span className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 transition duration-300 hover:border-violet-300/25 hover:bg-white/[0.055]">
               <Mail className="size-4 text-violet-200" aria-hidden="true" />
               {profile.email}
             </span>
           </div>
         </div>
 
-        <div className="relative mx-auto w-full max-w-md">
-          <div className="absolute -inset-4 rounded-[2rem] bg-gradient-to-br from-violet-500/20 to-cyan-400/10 blur-2xl" />
-          <div className="relative overflow-hidden rounded-[1.5rem] border border-white/10 bg-[#111116] p-6 shadow-2xl shadow-black/40">
+        <div className="hero-panel-open relative mx-auto w-full max-w-md">
+          <div className="absolute -inset-4 rounded-[2rem] bg-gradient-to-br from-violet-500/20 to-cyan-400/10 blur-2xl transition duration-500 ease-out" />
+          <div className="relative overflow-hidden rounded-[1.5rem] border border-white/10 bg-[#111116] p-6 shadow-2xl shadow-black/40 transition duration-500 ease-out hover:-translate-y-1 hover:border-violet-300/30 hover:shadow-violet-950/30">
             <div className="mb-5 flex items-center gap-2">
               <span className="size-3 rounded-full bg-red-400" />
               <span className="size-3 rounded-full bg-yellow-300" />
@@ -88,7 +88,7 @@ export function Hero() {
               {["Laravel", "React", "MySQL"].map((item) => (
                 <div
                   key={item}
-                  className="rounded-xl border border-violet-400/20 bg-violet-500/10 px-3 py-4 text-center text-sm font-semibold text-violet-100"
+                  className="rounded-xl border border-violet-400/20 bg-violet-500/10 px-3 py-4 text-center text-sm font-semibold text-violet-100 transition duration-300 ease-out hover:-translate-y-0.5 hover:border-violet-300/45 hover:bg-violet-500/20 active:translate-y-0 active:scale-[0.98]"
                 >
                   {item}
                 </div>

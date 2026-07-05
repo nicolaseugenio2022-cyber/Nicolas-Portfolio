@@ -65,7 +65,7 @@ export function SkillGroup({ title, icon: Icon, skills }: SkillGroupProps) {
   return (
     <Card
       className={cn(
-        "w-full border-white/10 bg-white/[0.035] text-white ring-white/10",
+        "w-full border-white/10 bg-white/[0.035] text-white ring-white/10 transition duration-300 ease-out hover:border-violet-300/25 hover:bg-white/[0.05] hover:shadow-xl hover:shadow-violet-950/20 active:scale-[0.995]",
         textOnly ? "max-w-2xl" : "max-w-[22rem]"
       )}
     >
@@ -86,14 +86,14 @@ export function SkillGroup({ title, icon: Icon, skills }: SkillGroupProps) {
           textOnly ? (
             <span
               key={skill}
-              className="rounded-full border border-violet-400/25 bg-violet-500/10 px-3 py-2 text-sm font-medium text-violet-50 transition duration-300 ease-out hover:-translate-y-0.5 hover:border-violet-300/45 hover:bg-violet-500/20 hover:shadow-lg hover:shadow-violet-950/25"
+              className="rounded-full border border-violet-400/25 bg-violet-500/10 px-3 py-2 text-sm font-medium text-violet-50 transition duration-300 ease-out hover:-translate-y-0.5 hover:border-violet-300/45 hover:bg-violet-500/20 hover:shadow-lg hover:shadow-violet-950/25 active:translate-y-0 active:scale-[0.97]"
             >
               {skill}
             </span>
           ) : (
             <div
               key={skill}
-              className="flex min-h-28 w-24 flex-col items-center justify-center rounded-xl border border-white/10 bg-black/25 p-3 text-center transition hover:-translate-y-1 hover:border-violet-300/40 hover:bg-violet-500/10"
+              className="group flex min-h-28 w-24 flex-col items-center justify-center rounded-xl border border-white/10 bg-black/25 p-3 text-center transition duration-300 ease-out hover:-translate-y-1 hover:border-violet-300/40 hover:bg-violet-500/10 active:translate-y-0 active:scale-[0.97]"
             >
               <SkillLogo skill={skill} />
               <p className="mt-3 text-xs font-semibold leading-5 text-zinc-100">
@@ -123,7 +123,7 @@ function SkillLogo({ skill }: { skill: string }) {
   }
 
   return (
-    <div className="flex size-14 items-center justify-center rounded-xl border border-white/10 bg-white p-3 shadow-lg shadow-black/25">
+    <div className="flex size-14 items-center justify-center rounded-xl border border-white/10 bg-white p-3 shadow-lg shadow-black/25 transition duration-300 group-hover:shadow-violet-950/20">
       <svg
         role="img"
         aria-label={icon.title}

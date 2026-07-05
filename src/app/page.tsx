@@ -6,6 +6,7 @@ import { Hero } from "@/components/hero";
 import { LocationMapButton } from "@/components/location-map-button";
 import { Navbar } from "@/components/navbar";
 import { ProjectCaseStudyCard } from "@/components/project-case-study-card";
+import { ScrollRevealController } from "@/components/scroll-reveal-controller";
 import { Section } from "@/components/section";
 import { SkillGroup } from "@/components/skill-group";
 import { TimelineItem } from "@/components/timeline-item";
@@ -40,10 +41,12 @@ const skillSections = [
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-[linear-gradient(180deg,rgba(139,92,246,0.1)_0%,rgba(5,5,8,0)_28%),linear-gradient(135deg,rgba(6,182,212,0.08)_0%,rgba(5,5,8,0)_36%),#050508] text-white">
-      <Navbar />
-      <main>
-        <Hero />
+    <>
+      <div className="portfolio-open min-h-screen bg-[linear-gradient(180deg,rgba(139,92,246,0.1)_0%,rgba(5,5,8,0)_28%),linear-gradient(135deg,rgba(6,182,212,0.08)_0%,rgba(5,5,8,0)_36%),#050508] text-white">
+        <ScrollRevealController />
+        <Navbar />
+        <main>
+          <Hero />
 
         <Section
           id="about"
@@ -55,7 +58,8 @@ export default function Home() {
             {profile.highlights.map((highlight, index) => (
               <div
                 key={highlight}
-                className="flex gap-4 lg:border-r lg:border-white/10 lg:pr-6 lg:last:border-r-0"
+                data-reveal="slide-up"
+                className={`reveal-delay-${Math.min(index + 1, 4)} flex gap-4 transition duration-300 ease-out hover:-translate-y-0.5 hover:text-white active:translate-y-0 active:scale-[0.995] lg:border-r lg:border-white/10 lg:pr-6 lg:last:border-r-0`}
               >
                 <span className="font-heading text-sm font-bold text-violet-300">
                   0{index + 1}
@@ -75,7 +79,10 @@ export default function Home() {
           <div className="grid gap-12">
             {skillSections.map((section) => (
               <div key={section.title}>
-                <div className="mb-6 flex items-center justify-center gap-3 border-b border-white/10 pb-4">
+                <div
+                  className="mb-6 flex items-center justify-center gap-3 border-b border-white/10 pb-4"
+                  data-reveal="fade"
+                >
                   <span className="grid size-9 place-items-center rounded-xl bg-violet-500/15 text-violet-200">
                     <GraduationCap className="size-5" aria-hidden="true" />
                   </span>
@@ -86,8 +93,14 @@ export default function Home() {
                 <div className="flex flex-wrap justify-center gap-5">
                   {skillGroups
                     .filter((group) => section.groups.includes(group.title))
-                    .map((group) => (
-                      <SkillGroup key={group.title} {...group} />
+                    .map((group, index) => (
+                      <div
+                        key={group.title}
+                        className={`reveal-delay-${Math.min(index + 1, 4)}`}
+                        data-reveal="slide-up"
+                      >
+                        <SkillGroup {...group} />
+                      </div>
                     ))}
                 </div>
               </div>
@@ -115,8 +128,14 @@ export default function Home() {
           description="Each project is presented around the problem, the system built, and the practical features that supported administrative or public-sector workflows."
         >
           <div className="grid gap-6 xl:grid-cols-2">
-            {projects.map((project) => (
-              <ProjectCaseStudyCard key={project.title} {...project} />
+            {projects.map((project, index) => (
+              <div
+                key={project.title}
+                className={`reveal-delay-${Math.min(index + 1, 4)}`}
+                data-reveal="slide-up"
+              >
+                <ProjectCaseStudyCard {...project} />
+              </div>
             ))}
           </div>
         </Section>
@@ -128,10 +147,11 @@ export default function Home() {
           className="bg-white/[0.015]"
         >
           <div className="grid gap-4 lg:grid-cols-2">
-            {certifications.map((certification) => (
+            {certifications.map((certification, index) => (
               <article
                 key={`${certification.title}-${certification.date}`}
-                className="rounded-xl border border-white/10 bg-white/[0.035] p-5 transition duration-300 ease-out hover:-translate-y-1 hover:border-violet-300/35 hover:bg-white/[0.055] hover:shadow-xl hover:shadow-violet-950/25"
+                className={`reveal-delay-${Math.min((index % 4) + 1, 4)} rounded-xl border border-white/10 bg-white/[0.035] p-5 transition duration-300 ease-out hover:-translate-y-1 hover:border-violet-300/35 hover:bg-white/[0.055] hover:shadow-xl hover:shadow-violet-950/25 active:translate-y-0 active:scale-[0.995]`}
+                data-reveal="slide-up"
               >
                 <div className="flex gap-4">
                   <Award
@@ -168,10 +188,11 @@ export default function Home() {
           title="Academic background."
         >
           <div className="grid gap-4">
-            {education.map((item) => (
+            {education.map((item, index) => (
               <article
                 key={item.school}
-                className="flex flex-col gap-4 rounded-xl border border-white/10 bg-[#111116] p-5 transition duration-300 ease-out hover:-translate-y-1 hover:border-cyan-300/35 hover:bg-[#14141b] hover:shadow-xl hover:shadow-cyan-950/20 sm:flex-row sm:items-center sm:justify-between"
+                className={`reveal-delay-${Math.min((index % 4) + 1, 4)} flex flex-col gap-4 rounded-xl border border-white/10 bg-[#111116] p-5 transition duration-300 ease-out hover:-translate-y-1 hover:border-cyan-300/35 hover:bg-[#14141b] hover:shadow-xl hover:shadow-cyan-950/20 active:translate-y-0 active:scale-[0.995] sm:flex-row sm:items-center sm:justify-between`}
+                data-reveal="slide-up"
               >
                 <div className="flex gap-4">
                   <GraduationCap
@@ -214,9 +235,10 @@ export default function Home() {
         >
           <ContactPanel />
         </Section>
-      </main>
-      <Footer />
+        </main>
+        <Footer />
+      </div>
       <BackToTop />
-    </div>
+    </>
   );
 }

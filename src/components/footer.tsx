@@ -36,7 +36,7 @@ export function Footer() {
                 target="_blank"
                 rel="noreferrer"
                 aria-label={link.label}
-                className="grid size-10 place-items-center rounded-xl border border-white/10 bg-white/[0.04] text-zinc-200 outline-none transition hover:-translate-y-0.5 hover:border-violet-300/50 hover:bg-violet-500/15 hover:text-white focus-visible:ring-3 focus-visible:ring-violet-400/60"
+                className="grid size-11 place-items-center rounded-xl border border-white/10 bg-white/[0.04] text-zinc-200 outline-none transition duration-300 ease-out hover:-translate-y-0.5 hover:border-violet-300/50 hover:bg-violet-500/15 hover:text-white active:translate-y-0 active:scale-95 focus-visible:ring-3 focus-visible:ring-violet-400/60"
               >
                 <svg
                   role="img"
