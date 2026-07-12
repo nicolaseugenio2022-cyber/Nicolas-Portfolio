@@ -93,7 +93,7 @@ export const skillGroups = [
   {
     title: "Tools",
     icon: Wrench,
-    skills: ["Git", "GitHub", "XAMPP", "Visual Studio Code", "Composer"],
+    skills: ["Git", "GitHub", "Docker", "XAMPP", "Visual Studio Code", "Composer"],
   },
   {
     title: "Soft Skills",

@@ -3,6 +3,7 @@ import {
   siBootstrap,
   siComposer,
   siCplusplus,
+  siDocker,
   siGit,
   siGithub,
   siJavascript,
@@ -53,6 +54,7 @@ const stackIcons: Record<string, SimpleIcon> = {
   Supabase: siSupabase,
   Git: siGit,
   GitHub: siGithub,
+  Docker: siDocker,
   XAMPP: siXampp,
   Composer: siComposer,
 };

@@ -1,7 +1,13 @@
 "use client";
 
 import Image, { type StaticImageData } from "next/image";
-import { useEffect, useRef, useState } from "react";
+import {
+  type KeyboardEvent as ReactKeyboardEvent,
+  type PointerEvent as ReactPointerEvent,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { createPortal } from "react-dom";
 import {
   ArrowLeft,
@@ -9,6 +15,8 @@ import {
   ArrowUpRight,
   CheckCircle2,
   Images,
+  Maximize2,
+  Minimize2,
   X,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -37,6 +45,7 @@ export type ProjectCaseStudyCardProps = {
   isOpen: boolean;
   onOpen: () => void;
   onClose: () => void;
+  showMobileHint: boolean;
 };
 
 export function ProjectCaseStudyCard(props: ProjectCaseStudyCardProps) {
@@ -47,8 +56,17 @@ export function ProjectCaseStudyCard(props: ProjectCaseStudyCardProps) {
   const [selectedImages, setSelectedImages] = useState(() =>
     gallerySections.map(() => 0),
   );
-  const triggerRef = useRef<HTMLButtonElement>(null);
+  const triggerRef = useRef<HTMLElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
+  const touchStartRef = useRef<{
+    pointerId: number;
+    x: number;
+    y: number;
+  } | null>(null);
+  const controlsTimerRef = useRef(0);
+  const hasShownGalleryHintRef = useRef(false);
+  const [galleryControlsVisible, setGalleryControlsVisible] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
   const { isOpen, onClose } = props;
   const activeGallery = gallerySections[activeSection];
   const activeImage = selectedImages[activeSection] ?? 0;
@@ -62,6 +80,7 @@ export function ProjectCaseStudyCard(props: ProjectCaseStudyCardProps) {
   }
 
   function closeDialog() {
+    setIsExpanded(false);
     onClose();
     requestAnimationFrame(() => triggerRef.current?.focus());
   }
@@ -78,6 +97,73 @@ export function ProjectCaseStudyCard(props: ProjectCaseStudyCardProps) {
     );
   }
 
+  function revealGalleryControls(duration = 1400) {
+    window.clearTimeout(controlsTimerRef.current);
+    setGalleryControlsVisible(true);
+    controlsTimerRef.current = window.setTimeout(
+      () => setGalleryControlsVisible(false),
+      duration,
+    );
+  }
+
+  function handleStagePointerDown(event: ReactPointerEvent<HTMLDivElement>) {
+    if (event.pointerType !== "touch" || activeGallery.images.length < 2) return;
+    touchStartRef.current = {
+      pointerId: event.pointerId,
+      x: event.clientX,
+      y: event.clientY,
+    };
+    revealGalleryControls();
+  }
+
+  function handleStagePointerUp(event: ReactPointerEvent<HTMLDivElement>) {
+    const start = touchStartRef.current;
+    touchStartRef.current = null;
+    if (!start || start.pointerId !== event.pointerId) return;
+    if ((event.target as HTMLElement).closest("button")) return;
+
+    const deltaX = event.clientX - start.x;
+    const deltaY = event.clientY - start.y;
+    const horizontalDistance = Math.abs(deltaX);
+    const verticalDistance = Math.abs(deltaY);
+
+    if (horizontalDistance >= 44 && horizontalDistance > verticalDistance * 1.2) {
+      if (deltaX < 0) showNext();
+      else showPrevious();
+      revealGalleryControls();
+      return;
+    }
+
+    if (horizontalDistance <= 12 && verticalDistance <= 12) {
+      const bounds = event.currentTarget.getBoundingClientRect();
+      if (event.clientX < bounds.left + bounds.width / 2) showPrevious();
+      else showNext();
+      revealGalleryControls();
+    }
+  }
+
+  function openProject() {
+    setActiveSection(0);
+    setSelectedImages(gallerySections.map(() => 0));
+    setIsExpanded(false);
+    props.onOpen();
+  }
+
+  function handleCardKeyDown(event: ReactKeyboardEvent<HTMLElement>) {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    event.preventDefault();
+    openProject();
+  }
+
+  useEffect(() => {
+    if (!isOpen) return;
+    if (!hasShownGalleryHintRef.current) {
+      hasShownGalleryHintRef.current = true;
+      revealGalleryControls(1800);
+    }
+    return () => window.clearTimeout(controlsTimerRef.current);
+  }, [isOpen]);
+
   useEffect(() => {
     if (!isOpen) return;
 
@@ -86,6 +172,10 @@ export function ProjectCaseStudyCard(props: ProjectCaseStudyCardProps) {
 
     function onKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
+        if (isExpanded) {
+          setIsExpanded(false);
+          return;
+        }
         onClose();
         requestAnimationFrame(() => triggerRef.current?.focus());
       }
@@ -139,14 +229,22 @@ export function ProjectCaseStudyCard(props: ProjectCaseStudyCardProps) {
       document.body.style.overflow = previousOverflow;
       window.removeEventListener("keydown", onKeyDown);
     };
-  }, [activeGallery.images.length, activeSection, isOpen, onClose]);
+  }, [activeGallery.images.length, activeSection, isExpanded, isOpen, onClose]);
 
   const active = activeGallery.images[activeImage];
   const titleId = `${props.title.replaceAll(" ", "-")}-dialog-title`;
 
   return (
     <>
-      <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-violet-400/30 bg-card text-card-foreground transition duration-300 ease-out hover:-translate-y-1 hover:border-violet-500/60 hover:shadow-2xl hover:shadow-violet-950/10 dark:border-violet-300/30 dark:hover:border-violet-300/60 dark:hover:shadow-violet-950/30">
+      <article
+        ref={triggerRef}
+        role="button"
+        tabIndex={0}
+        onClick={openProject}
+        onKeyDown={handleCardKeyDown}
+        aria-label={`Open ${props.title} project showcase`}
+        className="group flex h-full cursor-pointer flex-col overflow-hidden rounded-2xl border border-violet-400/30 bg-card text-left text-card-foreground outline-none transition duration-300 ease-out hover:-translate-y-1 hover:border-violet-500/60 hover:shadow-2xl hover:shadow-violet-950/10 focus-visible:ring-4 focus-visible:ring-violet-400/60 dark:border-violet-300/30 dark:hover:border-violet-300/60 dark:hover:shadow-violet-950/30"
+      >
         <div className="relative aspect-[1.935/1] overflow-hidden bg-zinc-950">
           <Image
             src={props.images[0].image}
@@ -157,22 +255,16 @@ export function ProjectCaseStudyCard(props: ProjectCaseStudyCardProps) {
             className="object-cover object-top transition duration-500 ease-out group-hover:scale-[1.015]"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/5 to-transparent" />
-          <button
-            ref={triggerRef}
-            type="button"
-            onClick={() => {
-              setActiveSection(0);
-              setSelectedImages(gallerySections.map(() => 0));
-              props.onOpen();
-            }}
-            className="absolute inset-0 flex items-center justify-center outline-none focus-visible:ring-4 focus-visible:ring-inset focus-visible:ring-violet-300/80"
-            aria-label={`Open ${props.title} project showcase`}
-          >
-            <span className="flex min-h-11 items-center gap-2 rounded-full border border-white/30 bg-white px-5 py-2.5 text-sm font-bold text-zinc-950 opacity-100 shadow-xl transition duration-300 sm:translate-y-2 sm:opacity-0 sm:group-hover:translate-y-0 sm:group-hover:opacity-100 sm:group-focus-within:translate-y-0 sm:group-focus-within:opacity-100">
+          <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+            <span
+              className={`flex min-h-11 items-center gap-2 rounded-full border border-white/30 bg-white px-5 py-2.5 text-sm font-bold text-zinc-950 shadow-xl transition duration-300 md:translate-y-2 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100 md:group-focus-visible:translate-y-0 md:group-focus-visible:opacity-100 ${
+                props.showMobileHint ? "opacity-100" : "opacity-0"
+              }`}
+            >
               View Details
               <ArrowUpRight className="size-4" aria-hidden="true" />
             </span>
-          </button>
+          </div>
           <div className="pointer-events-none absolute bottom-4 left-5 flex flex-wrap gap-2">
             {props.stack.slice(0, 3).map((item) => (
               <Badge
@@ -221,7 +313,7 @@ export function ProjectCaseStudyCard(props: ProjectCaseStudyCardProps) {
             role="dialog"
             aria-modal="true"
             aria-labelledby={titleId}
-            className="flex h-[calc(100dvh-1rem)] w-full max-w-[80rem] flex-col overflow-hidden rounded-2xl border border-border bg-popover text-popover-foreground shadow-2xl shadow-black/45 sm:h-[min(calc(100dvh-2rem),48rem)]"
+            className="relative flex h-[calc(100dvh-1rem)] w-full max-w-[80rem] flex-col overflow-hidden rounded-2xl border border-border bg-popover text-popover-foreground shadow-2xl shadow-black/45 sm:h-[min(calc(100dvh-2rem),48rem)]"
           >
             <header className="flex min-h-16 shrink-0 items-center justify-between gap-4 border-b border-border px-4 sm:min-h-18 sm:px-7">
               <div className="min-w-0">
@@ -248,7 +340,7 @@ export function ProjectCaseStudyCard(props: ProjectCaseStudyCardProps) {
 
             {gallerySections.length > 1 ? (
               <div
-                className="grid shrink-0 grid-cols-2 gap-1.5 border-b border-border bg-[var(--surface-inset)] p-2 sm:flex sm:flex-wrap sm:items-center sm:gap-2 sm:px-5 sm:py-3"
+                className="flex shrink-0 items-center gap-1.5 overflow-x-auto overscroll-x-contain border-b border-border bg-[var(--surface-inset)] p-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:flex-wrap sm:gap-2 sm:overflow-visible sm:px-5 sm:py-3"
                 role="tablist"
                 aria-label={`${props.title} feature areas`}
               >
@@ -272,10 +364,10 @@ export function ProjectCaseStudyCard(props: ProjectCaseStudyCardProps) {
                       setActiveSection(next);
                       document.getElementById(`${titleId}-tab-${next}`)?.focus();
                     }}
-                    className={`min-h-11 rounded-lg px-4 py-2 text-sm font-semibold transition duration-300 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-violet-400/60 sm:min-w-32 ${
+                    className={`min-h-11 shrink-0 rounded-lg border px-4 py-2 text-sm font-semibold transition duration-300 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-violet-400/60 sm:min-w-32 ${
                       activeSection === index
-                        ? "bg-violet-600 text-white shadow-lg shadow-violet-950/20"
-                        : "text-muted-foreground hover:bg-card hover:text-foreground"
+                        ? "border-violet-300 bg-violet-100 text-violet-800 dark:border-violet-400/30 dark:bg-violet-500/15 dark:text-violet-200 sm:border-transparent sm:bg-violet-600 sm:text-white sm:shadow-lg sm:shadow-violet-950/20"
+                        : "border-transparent text-muted-foreground hover:bg-card hover:text-foreground"
                     }`}
                   >
                     {section.label}
@@ -295,7 +387,14 @@ export function ProjectCaseStudyCard(props: ProjectCaseStudyCardProps) {
                 }
                 className="flex min-h-[22rem] flex-col bg-[var(--surface-inset)] p-3 sm:p-5 lg:min-h-0 lg:border-r lg:border-border"
               >
-                <div className="group relative flex min-h-0 flex-1 items-center justify-center overflow-hidden rounded-xl border border-border bg-zinc-100 shadow-2xl shadow-black/20 dark:bg-zinc-950">
+                <div
+                  className="group relative flex min-h-0 flex-1 touch-pan-y items-center justify-center overflow-hidden rounded-xl border border-border bg-zinc-100 shadow-2xl shadow-black/20 dark:bg-zinc-950"
+                  onPointerDown={handleStagePointerDown}
+                  onPointerUp={handleStagePointerUp}
+                  onPointerCancel={() => {
+                    touchStartRef.current = null;
+                  }}
+                >
                   <div className="relative aspect-[1.935/1] w-full">
                     <Image
                       key={active.image.src}
@@ -312,7 +411,8 @@ export function ProjectCaseStudyCard(props: ProjectCaseStudyCardProps) {
                       <button
                         type="button"
                         onClick={showPrevious}
-                        className="absolute left-2 top-1/2 z-10 grid size-11 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-black/65 text-white opacity-100 shadow-xl backdrop-blur-sm transition duration-300 hover:scale-105 hover:bg-black/80 active:scale-95 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-violet-300/80 sm:left-4 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:opacity-100 [@media(pointer:coarse)]:opacity-100"
+                        data-visible={galleryControlsVisible}
+                        className="absolute left-2 top-1/2 z-10 grid size-11 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-black/65 text-white opacity-100 shadow-xl backdrop-blur-sm transition duration-300 hover:scale-105 hover:bg-black/80 active:scale-95 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-violet-300/80 sm:left-4 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:opacity-100 [@media(pointer:coarse)]:data-[visible=false]:opacity-0 [@media(pointer:coarse)]:data-[visible=true]:opacity-100"
                         aria-label="Show previous screenshot"
                       >
                         <ArrowLeft className="size-5" aria-hidden="true" />
@@ -320,7 +420,8 @@ export function ProjectCaseStudyCard(props: ProjectCaseStudyCardProps) {
                       <button
                         type="button"
                         onClick={showNext}
-                        className="absolute right-2 top-1/2 z-10 grid size-11 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-black/65 text-white opacity-100 shadow-xl backdrop-blur-sm transition duration-300 hover:scale-105 hover:bg-black/80 active:scale-95 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-violet-300/80 sm:right-4 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:opacity-100 [@media(pointer:coarse)]:opacity-100"
+                        data-visible={galleryControlsVisible}
+                        className="absolute right-2 top-1/2 z-10 grid size-11 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-black/65 text-white opacity-100 shadow-xl backdrop-blur-sm transition duration-300 hover:scale-105 hover:bg-black/80 active:scale-95 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-violet-300/80 sm:right-4 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:opacity-100 [@media(pointer:coarse)]:data-[visible=false]:opacity-0 [@media(pointer:coarse)]:data-[visible=true]:opacity-100"
                         aria-label="Show next screenshot"
                       >
                         <ArrowRight className="size-5" aria-hidden="true" />
@@ -329,17 +430,30 @@ export function ProjectCaseStudyCard(props: ProjectCaseStudyCardProps) {
                   ) : null}
 
                   <div
-                    className="absolute bottom-3 right-3 z-10 rounded-full border border-white/15 bg-black/70 px-3 py-1.5 text-center text-white shadow-lg backdrop-blur-sm"
+                    className="absolute bottom-2 left-2 z-10 rounded-full border border-white/10 bg-black/55 px-2.5 py-1 text-center text-white/85 backdrop-blur-sm"
                     aria-live="polite"
                   >
-                    <p className="text-xs font-bold tabular-nums sm:text-sm">
+                    <p className="text-[0.65rem] font-semibold tabular-nums sm:text-xs">
                       {activeImage + 1} / {activeGallery.images.length}
                     </p>
                   </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsExpanded(true);
+                      revealGalleryControls();
+                    }}
+                    className="absolute bottom-1.5 right-1.5 z-10 grid size-11 place-items-center rounded-full text-white transition active:scale-95 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-violet-300/80 sm:hidden"
+                    aria-label="Expand screenshot"
+                  >
+                    <span className="grid size-9 place-items-center rounded-full border border-white/15 bg-black/55 backdrop-blur-sm">
+                      <Maximize2 className="size-3.5" aria-hidden="true" />
+                    </span>
+                  </button>
                 </div>
 
                 <div
-                  className="mt-3 flex shrink-0 flex-wrap items-center gap-2"
+                  className="mt-2 flex shrink-0 flex-wrap items-center gap-1.5 sm:mt-3 sm:gap-2"
                   role="group"
                   aria-label={`${activeGallery.label} screenshots`}
                 >
@@ -348,7 +462,7 @@ export function ProjectCaseStudyCard(props: ProjectCaseStudyCardProps) {
                       key={image.label}
                       type="button"
                       onClick={() => selectImage(index)}
-                      className={`group relative aspect-[1.935/1] min-h-11 w-24 shrink-0 overflow-hidden rounded-lg border bg-zinc-950 transition duration-300 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-violet-400/60 sm:w-28 lg:w-32 ${
+                      className={`group relative h-11 w-20 shrink-0 overflow-hidden rounded-lg border bg-zinc-950 transition duration-300 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-violet-400/60 sm:aspect-[1.935/1] sm:h-auto sm:w-28 lg:w-32 ${
                         index === activeImage
                           ? "border-violet-500 ring-2 ring-violet-500/30"
                           : "border-border opacity-70 hover:border-violet-400 hover:opacity-100"
@@ -407,6 +521,73 @@ export function ProjectCaseStudyCard(props: ProjectCaseStudyCardProps) {
                 </div>
               </aside>
             </div>
+
+            {isExpanded ? (
+              <div
+                className="absolute inset-0 z-40 flex flex-col bg-zinc-950 text-white"
+                role="region"
+                aria-label="Expanded screenshot viewer"
+              >
+                <div className="flex min-h-16 items-center justify-between gap-4 border-b border-white/10 px-4">
+                  <div className="min-w-0">
+                    <p className="text-xs font-bold uppercase tracking-[0.16em] text-violet-300">
+                      {activeGallery.label}
+                    </p>
+                    <p className="truncate text-sm text-white/70">{active.label}</p>
+                  </div>
+                  <button
+                    type="button"
+                    autoFocus
+                    onClick={() => setIsExpanded(false)}
+                    className="grid size-11 shrink-0 place-items-center rounded-full border border-white/15 bg-white/10 text-white transition active:scale-95 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-violet-300/80"
+                    aria-label="Exit expanded screenshot"
+                  >
+                    <Minimize2 className="size-5" aria-hidden="true" />
+                  </button>
+                </div>
+                <div
+                  className="group relative min-h-0 flex-1 touch-pan-y"
+                  onPointerDown={handleStagePointerDown}
+                  onPointerUp={handleStagePointerUp}
+                  onPointerCancel={() => {
+                    touchStartRef.current = null;
+                  }}
+                >
+                  <Image
+                    key={`expanded-${active.image.src}`}
+                    src={active.image}
+                    alt={`${props.title}: ${active.label} screen`}
+                    fill
+                    placeholder="blur"
+                    sizes="100vw"
+                    className="animate-in fade-in object-contain duration-300"
+                  />
+                  {activeGallery.images.length > 1 ? (
+                    <>
+                      <button
+                        type="button"
+                        onClick={showPrevious}
+                        className="absolute left-3 top-1/2 z-10 grid size-11 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-black/65 transition active:scale-95 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-violet-300/80"
+                        aria-label="Show previous screenshot"
+                      >
+                        <ArrowLeft className="size-5" aria-hidden="true" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={showNext}
+                        className="absolute right-3 top-1/2 z-10 grid size-11 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-black/65 transition active:scale-95 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-violet-300/80"
+                        aria-label="Show next screenshot"
+                      >
+                        <ArrowRight className="size-5" aria-hidden="true" />
+                      </button>
+                    </>
+                  ) : null}
+                  <div className="absolute bottom-4 left-4 z-10 rounded-full border border-white/15 bg-black/70 px-3 py-1.5 text-xs font-bold tabular-nums backdrop-blur-sm">
+                    {activeImage + 1} / {activeGallery.images.length}
+                  </div>
+                </div>
+              </div>
+            ) : null}
           </div>
         </div>,
         document.body,
