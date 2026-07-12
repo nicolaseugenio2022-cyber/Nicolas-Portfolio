@@ -340,7 +340,7 @@ export function ProjectCaseStudyCard(props: ProjectCaseStudyCardProps) {
 
             {gallerySections.length > 1 ? (
               <div
-                className="flex shrink-0 items-center gap-1.5 overflow-x-auto overscroll-x-contain border-b border-border bg-[var(--surface-inset)] p-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:flex-wrap sm:gap-2 sm:overflow-visible sm:px-5 sm:py-3"
+                className="flex shrink-0 items-center gap-1.5 overflow-x-auto overscroll-x-contain border-b border-border bg-[var(--surface-inset)] p-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:flex-wrap lg:gap-2 lg:overflow-visible lg:px-5 lg:py-3"
                 role="tablist"
                 aria-label={`${props.title} feature areas`}
               >
@@ -364,9 +364,9 @@ export function ProjectCaseStudyCard(props: ProjectCaseStudyCardProps) {
                       setActiveSection(next);
                       document.getElementById(`${titleId}-tab-${next}`)?.focus();
                     }}
-                    className={`min-h-11 shrink-0 rounded-lg border px-4 py-2 text-sm font-semibold transition duration-300 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-violet-400/60 sm:min-w-32 ${
+                    className={`min-h-11 shrink-0 rounded-lg border px-4 py-2 text-sm font-semibold transition duration-300 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-violet-400/60 lg:min-w-32 ${
                       activeSection === index
-                        ? "border-violet-300 bg-violet-100 text-violet-800 dark:border-violet-400/30 dark:bg-violet-500/15 dark:text-violet-200 sm:border-transparent sm:bg-violet-600 sm:text-white sm:shadow-lg sm:shadow-violet-950/20"
+                        ? "border-violet-300 bg-violet-100 text-violet-800 dark:border-violet-400/30 dark:bg-violet-500/15 dark:text-violet-200 lg:border-transparent lg:bg-violet-600 lg:text-white lg:shadow-lg lg:shadow-violet-950/20"
                         : "border-transparent text-muted-foreground hover:bg-card hover:text-foreground"
                     }`}
                   >
@@ -385,17 +385,17 @@ export function ProjectCaseStudyCard(props: ProjectCaseStudyCardProps) {
                     ? `${titleId}-tab-${activeSection}`
                     : undefined
                 }
-                className="flex min-h-[22rem] flex-col bg-[var(--surface-inset)] p-3 sm:p-5 lg:min-h-0 lg:border-r lg:border-border"
+                className="flex h-fit flex-col bg-[var(--surface-inset)] p-2 sm:p-4 lg:h-auto lg:min-h-0 lg:border-r lg:border-border lg:p-5"
               >
                 <div
-                  className="group relative flex min-h-0 flex-1 touch-pan-y items-center justify-center overflow-hidden rounded-xl border border-border bg-zinc-100 shadow-2xl shadow-black/20 dark:bg-zinc-950"
+                  className="group relative flex aspect-[1.935/1] flex-none touch-pan-y items-center justify-center overflow-hidden rounded-xl border border-border bg-zinc-100 shadow-2xl shadow-black/20 dark:bg-zinc-950 lg:aspect-auto lg:min-h-0 lg:flex-1"
                   onPointerDown={handleStagePointerDown}
                   onPointerUp={handleStagePointerUp}
                   onPointerCancel={() => {
                     touchStartRef.current = null;
                   }}
                 >
-                  <div className="relative aspect-[1.935/1] w-full">
+                  <div className="absolute inset-0">
                     <Image
                       key={active.image.src}
                       src={active.image}
@@ -443,11 +443,11 @@ export function ProjectCaseStudyCard(props: ProjectCaseStudyCardProps) {
                       setIsExpanded(true);
                       revealGalleryControls();
                     }}
-                    className="absolute bottom-1.5 right-1.5 z-10 grid size-11 place-items-center rounded-full text-white transition active:scale-95 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-violet-300/80 sm:hidden"
+                    className="absolute bottom-1 right-1 z-10 grid size-11 place-items-center rounded-full text-white transition active:scale-95 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-violet-300/80 sm:hidden"
                     aria-label="Expand screenshot"
                   >
-                    <span className="grid size-9 place-items-center rounded-full border border-white/15 bg-black/55 backdrop-blur-sm">
-                      <Maximize2 className="size-3.5" aria-hidden="true" />
+                    <span className="grid size-8 place-items-center rounded-full border border-white/15 bg-black/55 backdrop-blur-sm">
+                      <Maximize2 className="size-3" aria-hidden="true" />
                     </span>
                   </button>
                 </div>
@@ -470,13 +470,15 @@ export function ProjectCaseStudyCard(props: ProjectCaseStudyCardProps) {
                       aria-label={`Show ${image.label} screenshot`}
                       aria-current={index === activeImage ? "true" : undefined}
                     >
-                      <Image
-                        src={image.image}
-                        alt=""
-                        fill
-                        sizes="(min-width: 640px) 12rem, 33vw"
-                        className="object-cover object-top transition duration-300 group-hover:scale-[1.02]"
-                      />
+                      <span className="absolute inset-1 overflow-hidden rounded-md">
+                        <Image
+                          src={image.image}
+                          alt=""
+                          fill
+                          sizes="(min-width: 640px) 12rem, 33vw"
+                          className="object-cover object-top transition duration-300 group-hover:scale-[1.02]"
+                        />
+                      </span>
                     </button>
                   ))}
                 </div>
