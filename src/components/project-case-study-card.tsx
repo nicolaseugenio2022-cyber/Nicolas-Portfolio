@@ -31,6 +31,22 @@ type ProjectGallerySection = {
   images: ProjectImage[];
 };
 
+type TouchPoint = {
+  x: number;
+  y: number;
+  startX: number;
+  startY: number;
+};
+
+type ExpandedGesture = {
+  mode: "idle" | "swipe" | "pan" | "pinch";
+  moved: boolean;
+  startDistance: number;
+  startScale: number;
+  startPan: { x: number; y: number };
+  lastPoint: { x: number; y: number };
+};
+
 export type ProjectCaseStudyCardProps = {
   title: string;
   label: string;
@@ -65,13 +81,27 @@ export function ProjectCaseStudyCard(props: ProjectCaseStudyCardProps) {
   } | null>(null);
   const controlsTimerRef = useRef(0);
   const hasShownGalleryHintRef = useRef(false);
+  const expandedPointersRef = useRef(new Map<number, TouchPoint>());
+  const expandedGestureRef = useRef<ExpandedGesture>({
+    mode: "idle",
+    moved: false,
+    startDistance: 0,
+    startScale: 1,
+    startPan: { x: 0, y: 0 },
+    lastPoint: { x: 0, y: 0 },
+  });
+  const zoomScaleRef = useRef(1);
+  const panRef = useRef({ x: 0, y: 0 });
   const [galleryControlsVisible, setGalleryControlsVisible] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [zoomScale, setZoomScale] = useState(1);
+  const [pan, setPan] = useState({ x: 0, y: 0 });
   const { isOpen, onClose } = props;
   const activeGallery = gallerySections[activeSection];
   const activeImage = selectedImages[activeSection] ?? 0;
 
   function selectImage(index: number) {
+    if (isExpanded) resetExpandedView();
     setSelectedImages((current) =>
       current.map((selected, section) =>
         section === activeSection ? index : selected,
@@ -80,6 +110,7 @@ export function ProjectCaseStudyCard(props: ProjectCaseStudyCardProps) {
   }
 
   function closeDialog() {
+    resetExpandedView();
     setIsExpanded(false);
     onClose();
     requestAnimationFrame(() => triggerRef.current?.focus());
@@ -104,6 +135,158 @@ export function ProjectCaseStudyCard(props: ProjectCaseStudyCardProps) {
       () => setGalleryControlsVisible(false),
       duration,
     );
+  }
+
+  function toggleGalleryControls() {
+    if (galleryControlsVisible) {
+      window.clearTimeout(controlsTimerRef.current);
+      setGalleryControlsVisible(false);
+    } else {
+      revealGalleryControls(1800);
+    }
+  }
+
+  function setZoom(nextScale: number, nextPan = panRef.current) {
+    zoomScaleRef.current = nextScale;
+    panRef.current = nextPan;
+    setZoomScale(nextScale);
+    setPan(nextPan);
+  }
+
+  function resetExpandedView() {
+    expandedPointersRef.current.clear();
+    expandedGestureRef.current.mode = "idle";
+    setZoom(1, { x: 0, y: 0 });
+  }
+
+  function distanceBetween(points: TouchPoint[]) {
+    return Math.hypot(points[1].x - points[0].x, points[1].y - points[0].y);
+  }
+
+  function clampPan(
+    nextPan: { x: number; y: number },
+    scale: number,
+    bounds: DOMRect,
+  ) {
+    const maxX = Math.max(0, ((scale - 1) * bounds.width) / 2);
+    const maxY = Math.max(0, ((scale - 1) * bounds.height) / 2);
+    return {
+      x: Math.min(Math.max(nextPan.x, -maxX), maxX),
+      y: Math.min(Math.max(nextPan.y, -maxY), maxY),
+    };
+  }
+
+  function handleExpandedPointerDown(event: ReactPointerEvent<HTMLDivElement>) {
+    if (event.pointerType !== "touch") return;
+    event.currentTarget.setPointerCapture(event.pointerId);
+    expandedPointersRef.current.set(event.pointerId, {
+      x: event.clientX,
+      y: event.clientY,
+      startX: event.clientX,
+      startY: event.clientY,
+    });
+    const points = Array.from(expandedPointersRef.current.values());
+    if (points.length >= 2) {
+      expandedGestureRef.current = {
+        mode: "pinch",
+        moved: true,
+        startDistance: distanceBetween(points),
+        startScale: zoomScaleRef.current,
+        startPan: panRef.current,
+        lastPoint: { x: event.clientX, y: event.clientY },
+      };
+    } else {
+      expandedGestureRef.current = {
+        mode: zoomScaleRef.current > 1 ? "pan" : "swipe",
+        moved: false,
+        startDistance: 0,
+        startScale: zoomScaleRef.current,
+        startPan: panRef.current,
+        lastPoint: { x: event.clientX, y: event.clientY },
+      };
+    }
+  }
+
+  function handleExpandedPointerMove(event: ReactPointerEvent<HTMLDivElement>) {
+    const point = expandedPointersRef.current.get(event.pointerId);
+    if (!point) return;
+    revealGalleryControls();
+    point.x = event.clientX;
+    point.y = event.clientY;
+
+    const points = Array.from(expandedPointersRef.current.values());
+    const gesture = expandedGestureRef.current;
+    if (points.length >= 2) {
+      event.preventDefault();
+      const ratio = distanceBetween(points) / Math.max(gesture.startDistance, 1);
+      const nextScale = Math.min(Math.max(gesture.startScale * ratio, 1), 4);
+      const nextPan =
+        nextScale === 1
+          ? { x: 0, y: 0 }
+          : clampPan(panRef.current, nextScale, event.currentTarget.getBoundingClientRect());
+      setZoom(nextScale, nextPan);
+      gesture.mode = "pinch";
+      gesture.moved = true;
+      return;
+    }
+
+    if (gesture.mode === "pan" && zoomScaleRef.current > 1) {
+      event.preventDefault();
+      const deltaX = event.clientX - gesture.lastPoint.x;
+      const deltaY = event.clientY - gesture.lastPoint.y;
+      if (Math.abs(deltaX) + Math.abs(deltaY) > 2) gesture.moved = true;
+      const nextPan = clampPan(
+        { x: panRef.current.x + deltaX, y: panRef.current.y + deltaY },
+        zoomScaleRef.current,
+        event.currentTarget.getBoundingClientRect(),
+      );
+      setZoom(zoomScaleRef.current, nextPan);
+      gesture.lastPoint = { x: event.clientX, y: event.clientY };
+    } else if (
+      Math.hypot(event.clientX - point.startX, event.clientY - point.startY) > 6
+    ) {
+      gesture.moved = true;
+    }
+  }
+
+  function handleExpandedPointerUp(event: ReactPointerEvent<HTMLDivElement>) {
+    const point = expandedPointersRef.current.get(event.pointerId);
+    if (!point) return;
+    const gesture = expandedGestureRef.current;
+    expandedPointersRef.current.delete(event.pointerId);
+
+    if ((event.target as HTMLElement).closest("button")) {
+      expandedGestureRef.current.mode = "idle";
+      return;
+    }
+
+    if (expandedPointersRef.current.size > 0) {
+      const remaining = Array.from(expandedPointersRef.current.values())[0];
+      expandedGestureRef.current = {
+        ...gesture,
+        mode: zoomScaleRef.current > 1 ? "pan" : "swipe",
+        moved: true,
+        lastPoint: { x: remaining.x, y: remaining.y },
+      };
+      return;
+    }
+
+    const deltaX = event.clientX - point.startX;
+    const deltaY = event.clientY - point.startY;
+    if (zoomScaleRef.current > 1) {
+      if (!gesture.moved && Math.abs(deltaX) < 12 && Math.abs(deltaY) < 12) {
+        toggleGalleryControls();
+      }
+      return;
+    }
+
+    if (Math.abs(deltaX) >= 44 && Math.abs(deltaX) > Math.abs(deltaY) * 1.2) {
+      if (deltaX < 0) showNext();
+      else showPrevious();
+      revealGalleryControls();
+    } else if (!gesture.moved && Math.abs(deltaX) < 12 && Math.abs(deltaY) < 12) {
+      toggleGalleryControls();
+    }
   }
 
   function handleStagePointerDown(event: ReactPointerEvent<HTMLDivElement>) {
@@ -173,6 +356,12 @@ export function ProjectCaseStudyCard(props: ProjectCaseStudyCardProps) {
     function onKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
         if (isExpanded) {
+          expandedPointersRef.current.clear();
+          expandedGestureRef.current.mode = "idle";
+          zoomScaleRef.current = 1;
+          panRef.current = { x: 0, y: 0 };
+          setZoomScale(1);
+          setPan({ x: 0, y: 0 });
           setIsExpanded(false);
           return;
         }
@@ -440,8 +629,9 @@ export function ProjectCaseStudyCard(props: ProjectCaseStudyCardProps) {
                   <button
                     type="button"
                     onClick={() => {
+                      resetExpandedView();
                       setIsExpanded(true);
-                      revealGalleryControls();
+                      revealGalleryControls(1800);
                     }}
                     className="absolute bottom-1 right-1 z-10 grid size-11 place-items-center rounded-full text-white transition active:scale-95 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-violet-300/80 sm:hidden"
                     aria-label="Expand screenshot"
@@ -526,33 +716,17 @@ export function ProjectCaseStudyCard(props: ProjectCaseStudyCardProps) {
 
             {isExpanded ? (
               <div
-                className="absolute inset-0 z-40 flex flex-col bg-zinc-950 text-white"
+                className="absolute inset-0 z-40 bg-black text-white"
                 role="region"
                 aria-label="Expanded screenshot viewer"
               >
-                <div className="flex min-h-16 items-center justify-between gap-4 border-b border-white/10 px-4">
-                  <div className="min-w-0">
-                    <p className="text-xs font-bold uppercase tracking-[0.16em] text-violet-300">
-                      {activeGallery.label}
-                    </p>
-                    <p className="truncate text-sm text-white/70">{active.label}</p>
-                  </div>
-                  <button
-                    type="button"
-                    autoFocus
-                    onClick={() => setIsExpanded(false)}
-                    className="grid size-11 shrink-0 place-items-center rounded-full border border-white/15 bg-white/10 text-white transition active:scale-95 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-violet-300/80"
-                    aria-label="Exit expanded screenshot"
-                  >
-                    <Minimize2 className="size-5" aria-hidden="true" />
-                  </button>
-                </div>
                 <div
-                  className="group relative min-h-0 flex-1 touch-pan-y"
-                  onPointerDown={handleStagePointerDown}
-                  onPointerUp={handleStagePointerUp}
-                  onPointerCancel={() => {
-                    touchStartRef.current = null;
+                  className="absolute inset-0 touch-none overflow-hidden"
+                  onPointerDown={handleExpandedPointerDown}
+                  onPointerMove={handleExpandedPointerMove}
+                  onPointerUp={handleExpandedPointerUp}
+                  onPointerCancel={(event) => {
+                    expandedPointersRef.current.delete(event.pointerId);
                   }}
                 >
                   <Image
@@ -563,13 +737,46 @@ export function ProjectCaseStudyCard(props: ProjectCaseStudyCardProps) {
                     placeholder="blur"
                     sizes="100vw"
                     className="animate-in fade-in object-contain duration-300"
+                    style={{
+                      transform: `translate3d(${pan.x}px, ${pan.y}px, 0) scale(${zoomScale})`,
+                      transformOrigin: "center",
+                      transition:
+                        expandedPointersRef.current.size > 0
+                          ? "none"
+                          : "transform 180ms ease-out",
+                    }}
                   />
+
+                  <div
+                    data-visible={galleryControlsVisible}
+                    className="pointer-events-none absolute inset-x-0 top-0 z-20 bg-gradient-to-b from-black/75 to-transparent px-4 pb-10 pt-3 transition duration-300 data-[visible=false]:-translate-y-2 data-[visible=false]:opacity-0"
+                  >
+                    <p className="text-xs font-bold uppercase tracking-[0.16em] text-violet-300">
+                      {activeGallery.label}
+                    </p>
+                    <p className="mt-0.5 truncate text-xs text-white/65">{active.label}</p>
+                  </div>
+
+                  <button
+                    type="button"
+                    autoFocus
+                    onClick={() => {
+                      resetExpandedView();
+                      setIsExpanded(false);
+                    }}
+                    className="absolute right-3 top-3 z-30 grid size-11 place-items-center rounded-full border border-white/15 bg-black/55 text-white backdrop-blur-sm transition active:scale-95 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-violet-300/80"
+                    aria-label="Exit expanded screenshot"
+                  >
+                    <Minimize2 className="size-5" aria-hidden="true" />
+                  </button>
+
                   {activeGallery.images.length > 1 ? (
                     <>
                       <button
                         type="button"
                         onClick={showPrevious}
-                        className="absolute left-3 top-1/2 z-10 grid size-11 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-black/65 transition active:scale-95 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-violet-300/80"
+                        data-visible={galleryControlsVisible}
+                        className="absolute left-3 top-1/2 z-20 grid size-11 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-black/60 backdrop-blur-sm transition duration-300 active:scale-95 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-violet-300/80 data-[visible=false]:opacity-0"
                         aria-label="Show previous screenshot"
                       >
                         <ArrowLeft className="size-5" aria-hidden="true" />
@@ -577,14 +784,18 @@ export function ProjectCaseStudyCard(props: ProjectCaseStudyCardProps) {
                       <button
                         type="button"
                         onClick={showNext}
-                        className="absolute right-3 top-1/2 z-10 grid size-11 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-black/65 transition active:scale-95 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-violet-300/80"
+                        data-visible={galleryControlsVisible}
+                        className="absolute right-3 top-1/2 z-20 grid size-11 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-black/60 backdrop-blur-sm transition duration-300 active:scale-95 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-violet-300/80 data-[visible=false]:opacity-0"
                         aria-label="Show next screenshot"
                       >
                         <ArrowRight className="size-5" aria-hidden="true" />
                       </button>
                     </>
                   ) : null}
-                  <div className="absolute bottom-4 left-4 z-10 rounded-full border border-white/15 bg-black/70 px-3 py-1.5 text-xs font-bold tabular-nums backdrop-blur-sm">
+                  <div
+                    className="absolute bottom-3 left-3 z-20 rounded-full border border-white/10 bg-black/45 px-2.5 py-1 text-[0.65rem] font-semibold tabular-nums text-white/75 backdrop-blur-sm"
+                    aria-live="polite"
+                  >
                     {activeImage + 1} / {activeGallery.images.length}
                   </div>
                 </div>

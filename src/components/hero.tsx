@@ -5,6 +5,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { profile } from "@/data/profile";
+import { SocialLinks } from "@/components/social-links";
 
 export function Hero() {
   return (
@@ -51,6 +52,13 @@ export function Hero() {
               Email Me
               <Mail className="size-4" aria-hidden="true" />
             </a>
+          </div>
+
+          <div className="mt-5 flex items-center gap-4">
+            <span className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+              Connect
+            </span>
+            <SocialLinks ariaLabel="Hero social profiles" />
           </div>
 
           <div className="mt-8 flex flex-wrap gap-3 text-sm text-muted-foreground">

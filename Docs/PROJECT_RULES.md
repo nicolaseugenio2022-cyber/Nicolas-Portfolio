@@ -174,6 +174,23 @@ Examples
 
 Avoid duplicated UI.
 
+## Reusable Frontend Interaction Patterns
+
+Apply these patterns when building comparable UI elsewhere:
+
+- Keep mutually exclusive overlays under one parent state owner. Do not let repeated cards independently mount competing dialogs.
+- Render viewport dialogs outside transformed or animated ancestors. A portal prevents `position: fixed` from being constrained by a transformed container.
+- Separate visual size from interaction size. Compact icons may sit inside a minimum 44px touch target.
+- On touch galleries, distinguish horizontal intent from vertical scrolling before navigating. Require a horizontal threshold and ensure horizontal movement clearly exceeds vertical movement.
+- Treat taps and swipes as one gesture system. Ignore bubbled pointer events from nested buttons so arrow and fullscreen controls do not trigger gallery-zone navigation.
+- Use one natural scroll owner. Avoid nested side-panel scrollbars; allow mobile dialog content to scroll while making common desktop viewports fit without scrolling where practical.
+- Use roving `tabIndex` and arrow-key focus movement for accessible tabs.
+- Mobile tab rails may scroll horizontally when labels cannot fit, but must not create page-level overflow or expose an unnecessary scrollbar.
+- Preserve per-group gallery state when switching feature tabs so users do not lose their place.
+- Use progressive affordance hints sparingly. Session-scoped hints may explain a gesture or clickable surface once, then disappear without blocking the first interaction.
+- Respect reduced-motion preferences and keep transitions limited to opacity and transforms where possible.
+- Use semantic theme tokens for surfaces, borders, foregrounds, muted text, and focus states. Add theme-specific utility overrides only when a shared token cannot express the requirement.
+
 ---
 
 # Styling

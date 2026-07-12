@@ -95,6 +95,30 @@ This file defines how Codex should work.
 
 ---
 
+# Current Portfolio UI Context
+
+The Projects-section UI/UX iteration is implemented.
+
+Before changing the portfolio showcase, load:
+
+```text
+docs/tasks/update-project-section.md
+```
+
+That task file records the project-specific implementation state, verified project presentation requirements, gallery organization, responsive behavior, and remaining content work.
+
+Current architecture boundaries:
+
+- `src/data/profile.ts` is the structured source for portfolio and project presentation data.
+- `ProjectsShowcase` owns which project is open so only one project dialog can be active.
+- `ProjectCaseStudyCard` contains the reusable card, accessible dialog, feature gallery, touch gestures, and expanded mobile image viewer.
+- Theme values are provided through shared semantic tokens in `globals.css`.
+- Theme initialization occurs before hydration, while `ThemeToggle` owns user-driven preference changes.
+
+Do not duplicate this behavior in project-specific components. Extend the existing data model and reusable showcase boundary.
+
+---
+
 # Source of Truth Priority
 
 When information conflicts, use this order:

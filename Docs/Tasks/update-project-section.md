@@ -360,3 +360,40 @@ At the end provide
 4. Commands executed
 5. Assumptions made
 6. Remaining recommendations (if any)
+
+---
+
+# Implementation Record
+
+## Completed UI
+
+- The Projects section displays LexVerdict and the Rural Health Unit project only.
+- Project presentation data and screenshot groupings are stored centrally in `src/data/profile.ts`.
+- Cards use one reusable equal-height layout with a large landing-page thumbnail, concise content, three technology badges, and an automatic remainder count.
+- `ProjectsShowcase` centrally owns the active project dialog.
+- Project dialogs render through a portal, close on Escape or backdrop interaction, lock background scrolling, trap focus, and restore focus to the triggering card.
+- LexVerdict screenshots are grouped into Overview, Manage Cases, Manage Users, and Manage Crime feature tabs.
+- Each feature tab remembers its selected screenshot while the dialog remains open.
+- Galleries support thumbnails, keyboard arrows, overlay buttons, image counters, touch swipes, left/right tap zones, and an expanded mobile viewer.
+- Touch navigation rejects predominantly vertical gestures so normal page scrolling is preserved.
+- Mobile project cards open on the first tap and use a session-scoped interaction hint that does not permanently cover the thumbnail or badges.
+- Mobile feature tabs use a compact horizontal rail without page-level overflow.
+- Common desktop viewports show the complete dialog without nested information-panel scrolling; mobile uses one natural dialog-content scroll region.
+- Both light and dark themes use the same semantic token system.
+- The navigation theme toggle persists the selected theme, respects the operating-system preference for first-time visitors, and applies the initial theme before hydration.
+- The mobile navigation uses an anchored animated popover, dismissible blurred backdrop, Escape handling, correct expanded semantics, and focus restoration.
+
+## Verified Validation
+
+- Production build succeeds with Next.js.
+- ESLint succeeds without warnings.
+- Desktop and mobile layouts have no page-level horizontal overflow.
+- Light and dark project dialogs remain functional.
+- Only one project dialog is active at a time.
+- No Live Demo action is displayed.
+
+## Remaining Project-Specific Work
+
+- Reconcile the visible LexVerdict status, description, highlights, and technology stack with the approved modern-rebuild wording in this task before treating the portfolio content as final.
+- Confirm the Rural Health Unit title, subtitle, feature wording, and Vite technology entry against the underlying project before the final content release.
+- Add repository links only if real public URLs are supplied and verified.
