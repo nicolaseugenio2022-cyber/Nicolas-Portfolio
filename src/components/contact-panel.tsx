@@ -6,7 +6,7 @@ import { contactDetails } from "@/data/profile";
 import { cn } from "@/lib/utils";
 
 const inputClasses =
-  "min-h-11 w-full rounded-xl border border-violet-400/45 bg-black/35 px-4 py-3 text-sm text-white outline-none transition duration-300 ease-out placeholder:text-zinc-600 hover:border-violet-300/60 focus:border-violet-300 focus:ring-3 focus:ring-violet-400/25";
+  "min-h-11 w-full rounded-xl border border-input bg-card px-4 py-3 text-base text-foreground outline-none transition duration-300 ease-out placeholder:text-muted-foreground hover:border-violet-400/60 focus:border-violet-500 focus:ring-3 focus:ring-violet-400/25 sm:text-sm";
 
 export function ContactPanel() {
   const [form, setForm] = useState({
@@ -73,14 +73,14 @@ export function ContactPanel() {
       <form
         onSubmit={handleSubmit}
         data-reveal="slide-up"
-        className="rounded-xl border border-violet-400/25 bg-black/25 p-6 shadow-2xl shadow-violet-950/20 transition duration-300 ease-out hover:border-violet-300/35 hover:bg-black/30"
+        className="rounded-xl border border-violet-400/25 bg-card p-6 shadow-2xl shadow-violet-950/10 transition duration-300 ease-out hover:border-violet-400/45 hover:bg-muted/30"
       >
-        <h3 className="font-heading text-2xl font-bold text-white">
+        <h3 className="font-heading text-2xl font-bold text-foreground">
           Send me a message
         </h3>
 
         <div className="mt-6 grid gap-5">
-          <label className="grid gap-2 text-sm font-semibold text-zinc-200">
+          <label className="grid gap-2 text-sm font-semibold text-foreground/85">
             Name
             <input
               required
@@ -94,7 +94,7 @@ export function ContactPanel() {
             />
           </label>
 
-          <label className="grid gap-2 text-sm font-semibold text-zinc-200">
+          <label className="grid gap-2 text-sm font-semibold text-foreground/85">
             Email
             <input
               required
@@ -108,7 +108,7 @@ export function ContactPanel() {
             />
           </label>
 
-          <label className="grid gap-2 text-sm font-semibold text-zinc-200">
+          <label className="grid gap-2 text-sm font-semibold text-foreground/85">
             Message
             <textarea
               required
@@ -127,10 +127,10 @@ export function ContactPanel() {
             className={cn(
               "mt-6 flex gap-3 rounded-xl border p-4 text-sm leading-6",
               delivery.status === "success"
-                ? "border-emerald-400/30 bg-emerald-400/10 text-emerald-100"
+                ? "border-emerald-300 bg-emerald-50 text-emerald-900 dark:border-emerald-400/30 dark:bg-emerald-400/10 dark:text-emerald-100"
                 : delivery.status === "error"
-                  ? "border-red-400/30 bg-red-400/10 text-red-100"
-                  : "border-violet-400/30 bg-violet-500/10 text-violet-100"
+                  ? "border-red-300 bg-red-50 text-red-900 dark:border-red-400/30 dark:bg-red-400/10 dark:text-red-100"
+                  : "border-violet-300 bg-violet-50 text-violet-950 dark:border-violet-400/30 dark:bg-violet-500/10 dark:text-violet-100"
             )}
             role={delivery.status === "error" ? "alert" : "status"}
             aria-live="polite"
@@ -165,18 +165,18 @@ export function ContactPanel() {
 
       <div className="grid gap-6">
         <div
-          className="rounded-xl border border-violet-400/20 bg-white/[0.035] p-6 transition duration-300 ease-out hover:-translate-y-1 hover:border-violet-300/35 hover:bg-white/[0.055] hover:shadow-xl hover:shadow-violet-950/20 active:translate-y-0 active:scale-[0.995]"
+          className="rounded-xl border border-violet-400/20 bg-card p-6 transition duration-300 ease-out hover:-translate-y-1 hover:border-violet-400/45 hover:bg-muted/50 hover:shadow-xl hover:shadow-violet-950/10 active:translate-y-0 active:scale-[0.995]"
           data-reveal="slide-up"
         >
-          <h3 className="font-heading text-2xl font-bold text-white">
+          <h3 className="font-heading text-2xl font-bold text-foreground">
             Let&apos;s work together
           </h3>
-          <p className="mt-4 leading-8 text-zinc-300">
+          <p className="mt-4 leading-8 text-muted-foreground">
             I&apos;m open to entry-level developer roles, practical web systems,
             database-driven projects, and technical support work where clean
             workflows and dependable implementation matter.
           </p>
-          <ul className="mt-5 grid gap-2 text-zinc-300">
+          <ul className="mt-5 grid gap-2 text-muted-foreground">
             {[
               "Web application development",
               "Database-backed systems",
@@ -192,27 +192,27 @@ export function ContactPanel() {
         </div>
 
         <div
-          className="reveal-delay-1 rounded-xl border border-violet-400/20 bg-[#111116] p-6 transition duration-300 ease-out hover:-translate-y-1 hover:border-violet-300/35 hover:bg-[#14141b] hover:shadow-xl hover:shadow-violet-950/20 active:translate-y-0 active:scale-[0.995]"
+          className="reveal-delay-1 rounded-xl border border-violet-400/20 bg-card p-6 transition duration-300 ease-out hover:-translate-y-1 hover:border-violet-400/45 hover:bg-muted/50 hover:shadow-xl hover:shadow-violet-950/10 active:translate-y-0 active:scale-[0.995]"
           data-reveal="slide-up"
         >
-          <h3 className="font-heading text-xl font-bold text-white">
+          <h3 className="font-heading text-xl font-bold text-foreground">
             Quick details
           </h3>
           <div className="mt-5 grid gap-3">
             {usefulDetails.map((item) => (
               <div
                 key={item.label}
-                className="flex items-center gap-4 rounded-xl border border-white/10 bg-black/20 p-4 transition duration-300 ease-out hover:border-violet-300/30 hover:bg-violet-500/10 active:scale-[0.99]"
+                className="flex items-center gap-4 rounded-xl border border-border bg-[var(--surface-inset)] p-4 transition duration-300 ease-out hover:border-violet-400/40 hover:bg-violet-500/10 active:scale-[0.99]"
               >
                 <item.icon
-                  className="size-5 shrink-0 text-violet-200"
+                  className="size-5 shrink-0 text-violet-700 dark:text-violet-200"
                   aria-hidden="true"
                 />
                 <div>
-                  <p className="text-xs font-semibold uppercase text-zinc-400">
+                  <p className="text-xs font-semibold uppercase text-muted-foreground">
                     {item.label}
                   </p>
-                  <p className="mt-1 text-sm leading-6 text-white">
+                  <p className="mt-1 text-sm leading-6 text-foreground">
                     {item.value}
                   </p>
                 </div>
@@ -220,13 +220,13 @@ export function ContactPanel() {
             ))}
           </div>
 
-          <div className="mt-5 rounded-xl border border-cyan-300/20 bg-cyan-400/10 p-4 transition duration-300 ease-out hover:border-cyan-200/35 hover:bg-cyan-400/15">
+          <div className="mt-5 rounded-xl border border-cyan-300 bg-cyan-50 p-4 transition duration-300 ease-out hover:border-cyan-500 hover:bg-cyan-100 dark:border-cyan-300/20 dark:bg-cyan-400/10 dark:hover:border-cyan-200/35 dark:hover:bg-cyan-400/15">
             <div className="flex items-center gap-3">
               <CheckCircle2
-                className="size-5 shrink-0 text-cyan-100"
+                className="size-5 shrink-0 text-cyan-700 dark:text-cyan-100"
                 aria-hidden="true"
               />
-              <p className="text-sm font-semibold text-cyan-50">
+              <p className="text-sm font-semibold text-cyan-950 dark:text-cyan-50">
                 Open to developer roles and practical web system projects.
               </p>
             </div>

@@ -5,7 +5,7 @@ import { Footer } from "@/components/footer";
 import { Hero } from "@/components/hero";
 import { LocationMapButton } from "@/components/location-map-button";
 import { Navbar } from "@/components/navbar";
-import { ProjectCaseStudyCard } from "@/components/project-case-study-card";
+import { ProjectsShowcase } from "@/components/projects-showcase";
 import { ScrollRevealController } from "@/components/scroll-reveal-controller";
 import { Section } from "@/components/section";
 import { SkillGroup } from "@/components/skill-group";
@@ -42,7 +42,7 @@ const skillSections = [
 export default function Home() {
   return (
     <>
-      <div className="portfolio-open min-h-screen bg-[linear-gradient(180deg,rgba(139,92,246,0.1)_0%,rgba(5,5,8,0)_28%),linear-gradient(135deg,rgba(6,182,212,0.08)_0%,rgba(5,5,8,0)_36%),#050508] text-white">
+      <div className="portfolio-open min-h-screen bg-[image:var(--portfolio-background)] text-foreground">
         <ScrollRevealController />
         <Navbar />
         <main>
@@ -54,17 +54,17 @@ export default function Home() {
           title="Developer foundation with IT support discipline."
           description="I focus on practical software systems, database-backed workflows, and reliable technical support for teams that need organized, maintainable tools."
         >
-          <div className="grid gap-6 border-y border-white/10 py-6 lg:grid-cols-3">
+          <div className="grid gap-6 border-y border-border py-6 lg:grid-cols-3">
             {profile.highlights.map((highlight, index) => (
               <div
                 key={highlight}
                 data-reveal="slide-up"
-                className={`reveal-delay-${Math.min(index + 1, 4)} flex gap-4 transition duration-300 ease-out hover:-translate-y-0.5 hover:text-white active:translate-y-0 active:scale-[0.995] lg:border-r lg:border-white/10 lg:pr-6 lg:last:border-r-0`}
+                className={`reveal-delay-${Math.min(index + 1, 4)} flex gap-4 transition duration-300 ease-out hover:-translate-y-0.5 hover:text-foreground active:translate-y-0 active:scale-[0.995] lg:border-r lg:border-border lg:pr-6 lg:last:border-r-0`}
               >
-                <span className="font-heading text-sm font-bold text-violet-300">
+                <span className="font-heading text-sm font-bold text-violet-700 dark:text-violet-300">
                   0{index + 1}
                 </span>
-                <p className="leading-8 text-zinc-200">{highlight}</p>
+                <p className="leading-8 text-muted-foreground">{highlight}</p>
               </div>
             ))}
           </div>
@@ -80,13 +80,13 @@ export default function Home() {
             {skillSections.map((section) => (
               <div key={section.title}>
                 <div
-                  className="mb-6 flex items-center justify-center gap-3 border-b border-white/10 pb-4"
+                  className="mb-6 flex items-center justify-center gap-3 border-b border-border pb-4"
                   data-reveal="fade"
                 >
-                  <span className="grid size-9 place-items-center rounded-xl bg-violet-500/15 text-violet-200">
+                  <span className="grid size-9 place-items-center rounded-xl bg-violet-500/15 text-violet-700 dark:text-violet-200">
                     <GraduationCap className="size-5" aria-hidden="true" />
                   </span>
-                  <h3 className="text-center font-heading text-2xl font-bold text-white sm:text-3xl">
+                  <h3 className="text-center font-heading text-2xl font-bold text-foreground sm:text-3xl">
                     {section.title}
                   </h3>
                 </div>
@@ -112,7 +112,7 @@ export default function Home() {
           id="experience"
           eyebrow="Experience"
           title="Hands-on technical support experience."
-          className="bg-white/[0.015]"
+          className="bg-[var(--surface-inset)]"
         >
           <div className="grid gap-6">
             {experience.map((item) => (
@@ -127,50 +127,40 @@ export default function Home() {
           title="Selected systems I've built."
           description="Each project is presented around the problem, the system built, and the practical features that supported administrative or public-sector workflows."
         >
-          <div className="grid gap-6 xl:grid-cols-2">
-            {projects.map((project, index) => (
-              <div
-                key={project.title}
-                className={`reveal-delay-${Math.min(index + 1, 4)}`}
-                data-reveal="slide-up"
-              >
-                <ProjectCaseStudyCard {...project} />
-              </div>
-            ))}
-          </div>
+          <ProjectsShowcase projects={projects} />
         </Section>
 
         <Section
           id="certifications"
           eyebrow="Certifications"
           title="Certifications and learning milestones."
-          className="bg-white/[0.015]"
+          className="bg-[var(--surface-inset)]"
         >
           <div className="grid gap-4 lg:grid-cols-2">
             {certifications.map((certification, index) => (
               <article
                 key={`${certification.title}-${certification.date}`}
-                className={`reveal-delay-${Math.min((index % 4) + 1, 4)} rounded-xl border border-white/10 bg-white/[0.035] p-5 transition duration-300 ease-out hover:-translate-y-1 hover:border-violet-300/35 hover:bg-white/[0.055] hover:shadow-xl hover:shadow-violet-950/25 active:translate-y-0 active:scale-[0.995]`}
+                className={`reveal-delay-${Math.min((index % 4) + 1, 4)} rounded-xl border border-border bg-card p-5 transition duration-300 ease-out hover:-translate-y-1 hover:border-violet-400/50 hover:bg-muted/50 hover:shadow-xl hover:shadow-violet-950/10 active:translate-y-0 active:scale-[0.995]`}
                 data-reveal="slide-up"
               >
                 <div className="flex gap-4">
                   <Award
-                    className="mt-1 size-5 shrink-0 text-violet-200"
+                    className="mt-1 size-5 shrink-0 text-violet-700 dark:text-violet-200"
                     aria-hidden="true"
                   />
                   <div>
-                    <h3 className="font-heading text-lg font-semibold text-white">
+                    <h3 className="font-heading text-lg font-semibold text-foreground">
                       {certification.title}
                     </h3>
                     {certification.detail ? (
-                      <p className="mt-1 text-sm text-zinc-400">
+                      <p className="mt-1 text-sm text-muted-foreground">
                         {certification.detail}
                       </p>
                     ) : null}
                     {certification.date ? (
                       <Badge
                         variant="outline"
-                        className="mt-3 border-violet-400/30 bg-violet-500/10 text-violet-100"
+                        className="mt-3 border-violet-300 bg-violet-50 text-violet-950 dark:border-violet-400/30 dark:bg-violet-500/10 dark:text-violet-100"
                       >
                         {certification.date}
                       </Badge>
@@ -191,20 +181,20 @@ export default function Home() {
             {education.map((item, index) => (
               <article
                 key={item.school}
-                className={`reveal-delay-${Math.min((index % 4) + 1, 4)} flex flex-col gap-4 rounded-xl border border-white/10 bg-[#111116] p-5 transition duration-300 ease-out hover:-translate-y-1 hover:border-cyan-300/35 hover:bg-[#14141b] hover:shadow-xl hover:shadow-cyan-950/20 active:translate-y-0 active:scale-[0.995] sm:flex-row sm:items-center sm:justify-between`}
+                className={`reveal-delay-${Math.min((index % 4) + 1, 4)} flex flex-col gap-4 rounded-xl border border-border bg-card p-5 transition duration-300 ease-out hover:-translate-y-1 hover:border-cyan-500/40 hover:bg-muted/50 hover:shadow-xl hover:shadow-cyan-950/10 active:translate-y-0 active:scale-[0.995] sm:flex-row sm:items-center sm:justify-between`}
                 data-reveal="slide-up"
               >
                 <div className="flex gap-4">
                   <GraduationCap
-                    className="mt-1 size-5 shrink-0 text-cyan-200"
+                    className="mt-1 size-5 shrink-0 text-cyan-700 dark:text-cyan-200"
                     aria-hidden="true"
                   />
                   <div>
-                    <h3 className="font-heading text-lg font-semibold text-white">
+                    <h3 className="font-heading text-lg font-semibold text-foreground">
                       {item.school}
                     </h3>
                     <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
-                      <span className="text-zinc-400">{item.program}</span>
+                      <span className="text-muted-foreground">{item.program}</span>
                       <LocationMapButton
                         name={item.locationName}
                         address={item.address}
@@ -218,7 +208,7 @@ export default function Home() {
                 </div>
                 <Badge
                   variant="outline"
-                  className="w-fit border-cyan-300/25 bg-cyan-400/10 text-cyan-100"
+                  className="w-fit border-cyan-300 bg-cyan-50 text-cyan-950 dark:border-cyan-300/25 dark:bg-cyan-400/10 dark:text-cyan-100"
                 >
                   {item.date}
                 </Badge>

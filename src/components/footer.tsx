@@ -14,13 +14,13 @@ const socialIcons: Record<string, SocialIcon> = {
 
 export function Footer() {
   return (
-    <footer className="border-t border-white/10 bg-[#07070b] px-5 py-8 sm:px-8 lg:px-10">
+    <footer className="border-t border-border bg-card/65 px-5 py-8 sm:px-8 lg:px-10">
       <div className="mx-auto flex max-w-6xl flex-col gap-6 md:flex-row md:items-center md:justify-between">
         <div>
-          <p className="font-heading text-base font-semibold text-white">
-            @2026 {profile.name}.
+          <p className="font-heading text-base font-semibold text-foreground">
+            © 2026 {profile.name}.
           </p>
-          <p className="mt-2 text-sm leading-6 text-zinc-400">
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">
             Built with {portfolioStack.join(", ")}.
           </p>
         </div>
@@ -36,7 +36,7 @@ export function Footer() {
                 target="_blank"
                 rel="noreferrer"
                 aria-label={link.label}
-                className="grid size-11 place-items-center rounded-xl border border-white/10 bg-white/[0.04] text-zinc-200 outline-none transition duration-300 ease-out hover:-translate-y-0.5 hover:border-violet-300/50 hover:bg-violet-500/15 hover:text-white active:translate-y-0 active:scale-95 focus-visible:ring-3 focus-visible:ring-violet-400/60"
+                className="grid size-11 place-items-center rounded-xl border border-border bg-card text-muted-foreground outline-none transition duration-300 ease-out hover:-translate-y-0.5 hover:border-violet-400/50 hover:bg-violet-500/15 hover:text-foreground active:translate-y-0 active:scale-95 focus-visible:ring-3 focus-visible:ring-violet-400/60"
               >
                 <svg
                   role="img"

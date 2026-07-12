@@ -65,12 +65,12 @@ export function SkillGroup({ title, icon: Icon, skills }: SkillGroupProps) {
   return (
     <Card
       className={cn(
-        "w-full border-white/10 bg-white/[0.035] text-white ring-white/10 transition duration-300 ease-out hover:border-violet-300/25 hover:bg-white/[0.05] hover:shadow-xl hover:shadow-violet-950/20 active:scale-[0.995]",
+        "w-full border-border bg-card text-card-foreground ring-border transition duration-300 ease-out hover:border-violet-400/40 hover:bg-muted/50 hover:shadow-xl hover:shadow-violet-950/10 active:scale-[0.995]",
         textOnly ? "max-w-2xl" : "max-w-[22rem]"
       )}
     >
-      <CardHeader className="border-b border-white/10 text-center">
-        <CardTitle className="flex items-center justify-center gap-3 text-sm font-bold uppercase text-violet-200">
+      <CardHeader className="border-b border-border text-center">
+        <CardTitle className="flex items-center justify-center gap-3 text-sm font-bold uppercase text-violet-700 dark:text-violet-200">
           <Icon className="size-4" aria-hidden="true" />
           <span>{title}</span>
         </CardTitle>
@@ -86,17 +86,17 @@ export function SkillGroup({ title, icon: Icon, skills }: SkillGroupProps) {
           textOnly ? (
             <span
               key={skill}
-              className="rounded-full border border-violet-400/25 bg-violet-500/10 px-3 py-2 text-sm font-medium text-violet-50 transition duration-300 ease-out hover:-translate-y-0.5 hover:border-violet-300/45 hover:bg-violet-500/20 hover:shadow-lg hover:shadow-violet-950/25 active:translate-y-0 active:scale-[0.97]"
+              className="rounded-full border border-violet-300 bg-violet-50 px-3 py-2 text-sm font-medium text-violet-950 transition duration-300 ease-out hover:-translate-y-0.5 hover:border-violet-500 hover:bg-violet-100 hover:shadow-lg hover:shadow-violet-950/10 active:translate-y-0 active:scale-[0.97] dark:border-violet-400/25 dark:bg-violet-500/10 dark:text-violet-50 dark:hover:border-violet-300/45 dark:hover:bg-violet-500/20 dark:hover:shadow-violet-950/25"
             >
               {skill}
             </span>
           ) : (
             <div
               key={skill}
-              className="group flex min-h-28 w-24 flex-col items-center justify-center rounded-xl border border-white/10 bg-black/25 p-3 text-center transition duration-300 ease-out hover:-translate-y-1 hover:border-violet-300/40 hover:bg-violet-500/10 active:translate-y-0 active:scale-[0.97]"
+              className="group flex min-h-28 w-24 flex-col items-center justify-center rounded-xl border border-border bg-[var(--surface-inset)] p-3 text-center transition duration-300 ease-out hover:-translate-y-1 hover:border-violet-400/45 hover:bg-violet-500/10 active:translate-y-0 active:scale-[0.97]"
             >
               <SkillLogo skill={skill} />
-              <p className="mt-3 text-xs font-semibold leading-5 text-zinc-100">
+              <p className="mt-3 text-xs font-semibold leading-5 text-foreground">
                 {skill}
               </p>
             </div>
@@ -112,7 +112,7 @@ function SkillLogo({ skill }: { skill: string }) {
 
   if (!icon) {
     return (
-      <div className="grid size-14 place-items-center rounded-xl border border-white/10 bg-white/[0.04] font-heading text-sm font-bold text-violet-100">
+      <div className="grid size-14 place-items-center rounded-xl border border-border bg-muted font-heading text-sm font-bold text-violet-700 dark:text-violet-100">
         {skill
           .split(" ")
           .map((word) => word[0])

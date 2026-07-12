@@ -29,10 +29,10 @@ export function TimelineItem({
         {date.slice(-2)}
       </div>
       <div className="absolute bottom-0 left-4 top-12 w-px bg-violet-400/25" />
-      <div className="rounded-xl border border-white/10 bg-white/[0.035] p-5 transition duration-300 ease-out hover:-translate-y-1 hover:border-violet-300/35 hover:bg-white/[0.055] hover:shadow-xl hover:shadow-violet-950/25 active:translate-y-0 active:scale-[0.995]">
+      <div className="rounded-xl border border-border bg-card p-5 transition duration-300 ease-out hover:-translate-y-1 hover:border-violet-400/45 hover:bg-muted/50 hover:shadow-xl hover:shadow-violet-950/10 active:translate-y-0 active:scale-[0.995]">
         <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <h3 className="font-heading text-xl font-semibold text-white">{title}</h3>
+            <h3 className="font-heading text-xl font-semibold text-foreground">{title}</h3>
             {hasLocation ? (
               <LocationMapButton
                 name={locationName}
@@ -42,12 +42,12 @@ export function TimelineItem({
                 className="-ml-2 px-2 py-1"
               />
             ) : (
-              <p className="text-sm font-medium text-violet-200">{organization}</p>
+              <p className="text-sm font-medium text-violet-700 dark:text-violet-200">{organization}</p>
             )}
           </div>
-          <p className="text-sm text-zinc-400">{date}</p>
+          <p className="text-sm text-muted-foreground">{date}</p>
         </div>
-        <p className="mt-4 leading-7 text-zinc-300">{description}</p>
+        <p className="mt-4 leading-7 text-muted-foreground">{description}</p>
       </div>
     </article>
   );

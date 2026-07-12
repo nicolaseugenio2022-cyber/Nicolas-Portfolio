@@ -10,6 +10,22 @@ import {
   Sparkles,
   Wrench,
 } from "lucide-react";
+import lexLanding from "@/Image/Lexverdict Python/Landing Page or Log in.png";
+import lexCase1 from "@/Image/Lexverdict Python/Manage Case/Image 1.png";
+import lexCase2 from "@/Image/Lexverdict Python/Manage Case/image 2.png";
+import lexCase3 from "@/Image/Lexverdict Python/Manage Case/Image 3.png";
+import lexCase4 from "@/Image/Lexverdict Python/Manage Case/Image 4.png";
+import lexCase5 from "@/Image/Lexverdict Python/Manage Case/Image 5.png";
+import lexCrime from "@/Image/Lexverdict Python/Manage Crime/Image 10.png";
+import lexUser6 from "@/Image/Lexverdict Python/Manage User Accounts/Image 6.png";
+import lexUser7 from "@/Image/Lexverdict Python/Manage User Accounts/Image 7.png";
+import lexUser8 from "@/Image/Lexverdict Python/Manage User Accounts/Image 8.png";
+import lexUser9 from "@/Image/Lexverdict Python/Manage User Accounts/Image 9.png";
+import rhuLanding from "@/Image/RHU/Landing Page or Log in.png";
+import rhuDashboard from "@/Image/RHU/Screenshot 2026-07-06 210911.png";
+import rhuAppointments from "@/Image/RHU/Screenshot 2026-07-06 210926.png";
+import rhuLaboratory from "@/Image/RHU/Screenshot 2026-07-06 210945.png";
+import rhuDental from "@/Image/RHU/Screenshot 2026-07-06 211002.png";
 
 export const profile = {
   name: "Nicolas B. Eugenio",
@@ -21,7 +37,7 @@ export const profile = {
     "BS Information Technology graduate with hands-on experience in software development, database management, and IT support. I build practical systems for record handling, workflow monitoring, and administrative operations.",
   highlights: [
     "Entry-level software developer with IT support experience",
-    "Built case monitoring and resident record management systems",
+    "Built case monitoring and healthcare management systems",
     "Comfortable with full-stack tools, databases, and troubleshooting",
   ],
 };
@@ -119,21 +135,72 @@ export const projects = [
       "Searchable case information",
       "Workflow support for office staff",
     ],
+    accent: "violet" as const,
+    images: [
+      { label: "Overview", image: lexLanding },
+      { label: "Manage cases", image: lexCase1 },
+      { label: "Case records", image: lexCase2 },
+      { label: "Case tracking", image: lexCase3 },
+      { label: "Case details", image: lexCase4 },
+      { label: "Reports", image: lexCase5 },
+      { label: "Crime records", image: lexCrime },
+      { label: "User accounts", image: lexUser6 },
+      { label: "User details", image: lexUser7 },
+      { label: "User roles", image: lexUser8 },
+      { label: "Account management", image: lexUser9 },
+    ],
+    gallerySections: [
+      {
+        label: "Overview",
+        images: [{ label: "Login and landing page", image: lexLanding }],
+      },
+      {
+        label: "Manage Cases",
+        images: [
+          { label: "Case dashboard", image: lexCase1 },
+          { label: "Case records", image: lexCase2 },
+          { label: "Case tracking", image: lexCase3 },
+          { label: "Case details", image: lexCase4 },
+          { label: "Case reports", image: lexCase5 },
+        ],
+      },
+      {
+        label: "Manage Users",
+        images: [
+          { label: "User accounts", image: lexUser6 },
+          { label: "User details", image: lexUser7 },
+          { label: "User roles", image: lexUser8 },
+          { label: "Account management", image: lexUser9 },
+        ],
+      },
+      {
+        label: "Manage Crime",
+        images: [{ label: "Crime records", image: lexCrime }],
+      },
+    ],
   },
   {
-    title: "Barangay Census System",
-    label: "Resident Records Platform",
+    title: "Rural Health Unit",
+    label: "Healthcare Management System",
     problem:
-      "Barangay resident records needed to be easier to record, update, search, and retrieve through a centralized database.",
+      "The Rural Health Unit needed a centralized way to coordinate patient appointments, staff services, laboratory records, and clinical assessments.",
     solution:
-      "Built a system with secure authentication and CRUD workflows to improve the accuracy, accessibility, and efficiency of resident record management.",
+      "Developed a healthcare management platform that organizes daily clinical workflows and makes essential patient service information easier for staff to access.",
     role: "Developer",
     stack: ["Laravel", "PHP", "MySQL", "JavaScript", "Bootstrap"],
     features: [
-      "Secure authentication",
-      "Create, read, update, and delete resident records",
-      "Search and retrieval workflows",
-      "Organized database management",
+      "Patient appointment scheduling and tracking",
+      "Staff and healthcare service management",
+      "Maternal and child health records",
+      "Laboratory and dental assessment workflows",
+    ],
+    accent: "cyan" as const,
+    images: [
+      { label: "Secure login", image: rhuLanding },
+      { label: "Dashboard", image: rhuDashboard },
+      { label: "Appointments", image: rhuAppointments },
+      { label: "Laboratory", image: rhuLaboratory },
+      { label: "Dental assessment", image: rhuDental },
     ],
   },
 ];

@@ -26,15 +26,15 @@ export function Section({
       <div className="mx-auto max-w-6xl">
         <div className="mb-9 max-w-3xl" data-reveal="slide-up">
           {eyebrow ? (
-            <p className="mb-3 text-sm font-semibold uppercase text-violet-300">
+            <p className="mb-3 text-sm font-semibold uppercase text-violet-700 dark:text-violet-300">
               {eyebrow}
             </p>
           ) : null}
-          <h2 className="font-heading text-3xl font-bold text-white sm:text-4xl">
+          <h2 className="font-heading text-3xl font-bold text-foreground sm:text-4xl">
             {title}
           </h2>
           {description ? (
-            <p className="mt-4 text-base leading-8 text-zinc-300">
+            <p className="mt-4 text-base leading-8 text-muted-foreground">
               {description}
             </p>
           ) : null}
